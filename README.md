@@ -1,76 +1,61 @@
-# React + TypeScript + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
-
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
 # green-api-test
+
+Веб-чат на React + TypeScript + Vite для работы с [GREEN-API](https://green-api.com/) (WhatsApp).
+
+## Требования
+
+- [Node.js](https://nodejs.org/) 20+ (рекомендуется LTS)
+- npm (идёт вместе с Node.js)
+- Аккаунт GREEN-API с активным инстансом (`idInstance` и `apiTokenInstance`)
+
+## Локальный запуск
+
+1. Клонируйте репозиторий и перейдите в папку проекта:
+
+```bash
+git clone <url-репозитория>
+cd green-api-test
+```
+
+2. Установите зависимости:
+
+```bash
+npm install
+```
+
+3. (Опционально) Задайте хост API, если ваш инстанс на другом сервере. По умолчанию используется `https://7107.api.greenapi.com`.
+
+Создайте файл `.env` в корне проекта:
+
+```env
+VITE_GREEN_API_HOST=https://7107.api.greenapi.com
+```
+
+Хост можно посмотреть в личном кабинете GREEN-API у вашего инстанса.
+
+4. Запустите dev-сервер:
+
+```bash
+npm run dev
+```
+
+5. Откройте в браузере адрес, который выведет Vite (обычно [http://localhost:5173](http://localhost:5173)).
+
+6. На экране входа укажите `idInstance` и `apiTokenInstance` из [кабинета GREEN-API](https://console.green-api.com/). После успешной проверки откроется чат.
+
+## Другие команды
+
+| Команда | Описание |
+| --- | --- |
+| `npm run dev` | Dev-сервер с hot reload |
+| `npm run build` | Сборка production в папку `dist` |
+| `npm run preview` | Локальный просмотр собранного `dist` |
+| `npm run lint` | Проверка ESLint |
+
+## Как пользоваться
+
+1. Войдите с данными инстанса GREEN-API.
+2. В сайдбаре добавьте чат по номеру телефона (международный формат, без `+`, например `79001234567`).
+3. Отправляйте текстовые сообщения; входящие подтягиваются через polling `receiveNotification`.
+
+Учётные данные сохраняются в `localStorage` браузера. При выходе они удаляются.
