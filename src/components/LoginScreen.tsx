@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { DEFAULT_API_HOST } from '../services/api';
 import type { Credentials } from '../types/chat';
 
 type Props = {
@@ -8,24 +9,27 @@ type Props = {
 export function LoginScreen({ onLogin }: Props) {
   const [idInstance, setIdInstance] = useState('');
   const [apiTokenInstance, setApiTokenInstance] = useState('');
+  const [apiHost, setApiHost] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!idInstance.trim() || !apiTokenInstance.trim()) {
-      setError('Заполните оба поля');
+      setError('Заполните idInstance и apiTokenInstance');
       return;
     }
     setError(null);
     setLoading(true);
     try {
+      const host = apiHost.trim();
       await onLogin({
         idInstance: idInstance.trim(),
         apiTokenInstance: apiTokenInstance.trim(),
+        ...(host ? { apiHost: host } : {}),
       });
     } catch {
-      setError('Не удалось подключиться. Проверьте idInstance и apiTokenInstance.');
+      setError('Не удалось подключиться. Проверьте данные инстанса и хост API.');
     } finally {
       setLoading(false);
     }
@@ -56,6 +60,18 @@ export function LoginScreen({ onLogin }: Props) {
             autoComplete="off"
             value={apiTokenInstance}
             onChange={(e) => setApiTokenInstance(e.target.value)}
+          />
+        </label>
+
+        <label className="form-label">
+          API host <span className="text-muted fw-normal">(опционально)</span>
+          <input
+            className="form-control"
+            type="url"
+            autoComplete="off"
+            placeholder={DEFAULT_API_HOST}
+            value={apiHost}
+            onChange={(e) => setApiHost(e.target.value)}
           />
         </label>
 

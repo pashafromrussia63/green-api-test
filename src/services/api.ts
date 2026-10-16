@@ -1,15 +1,23 @@
 import axios from 'axios';
 import type { Credentials } from '../types/chat';
 
+export const DEFAULT_API_HOST =
+  import.meta.env.VITE_GREEN_API_HOST ?? 'https://api.greenapi.com';
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_GREEN_API_HOST ?? 'https://api.greenapi.com',
   timeout: 30_000,
 });
+
+function resolveHost(creds: Credentials): string {
+  const host = creds.apiHost?.trim() || DEFAULT_API_HOST;
+  return host.replace(/\/+$/, '');
+}
 
 export const getSettings = async (creds: Credentials) => {
   const { idInstance, apiTokenInstance } = creds;
   const res = await api.get(
-    `/waInstance${idInstance}/getSettings/${apiTokenInstance}`
+    `/waInstance${idInstance}/getSettings/${apiTokenInstance}`,
+    { baseURL: resolveHost(creds) }
   );
   return res.data;
 };
@@ -26,7 +34,8 @@ export const sendMessage = async (
       chatId: `${phone}@c.us`,
       message: text,
       typingTime: 1000,
-    }
+    },
+    { baseURL: resolveHost(creds) }
   );
   return res.data as { idMessage: string };
 };
@@ -49,7 +58,8 @@ export const receiveNotification = async (
 ): Promise<GreenApiNotification | null> => {
   const { idInstance, apiTokenInstance } = creds;
   const res = await api.get(
-    `/waInstance${idInstance}/receiveNotification/${apiTokenInstance}`
+    `/waInstance${idInstance}/receiveNotification/${apiTokenInstance}`,
+    { baseURL: resolveHost(creds) }
   );
   return res.data;
 };
@@ -60,7 +70,8 @@ export const deleteNotification = async (
 ) => {
   const { idInstance, apiTokenInstance } = creds;
   const res = await api.delete(
-    `/waInstance${idInstance}/deleteNotification/${apiTokenInstance}/${receiptId}`
+    `/waInstance${idInstance}/deleteNotification/${apiTokenInstance}/${receiptId}`,
+    { baseURL: resolveHost(creds) }
   );
   return res.data;
 };

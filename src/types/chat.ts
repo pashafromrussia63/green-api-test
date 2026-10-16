@@ -14,4 +14,5 @@ export type Chat = {
 export type Credentials = {
     idInstance: string;
     apiTokenInstance: string;
+    apiHost?: string;
 };
